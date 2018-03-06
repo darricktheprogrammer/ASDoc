@@ -15,7 +15,7 @@
 # compliance with the License. Please obtain a copy of the License at
 # http://www.opensource.apple.com/apsl/ and read it before using this
 # file.
-# 
+#
 # The Original Code and all software distributed under the License are
 # distributed on an 'AS IS' basis, WITHOUT WARRANTY OF ANY KIND, EITHER
 # EXPRESS OR IMPLIED, AND APPLE HEREBY DISCLAIMS ALL SUCH WARRANTIES,
@@ -402,9 +402,9 @@ sub new {
     my($param) = shift;
     my($class) = ref($param) || $param;
     my $self = {};
-    
+
     # cluck("Created header element\n"); # @@@
-    
+
     bless($self, $class);
     $self->_initialize();
 
@@ -600,7 +600,7 @@ sub clone {
 #     @abstract
 #         Gets/sets the contents of a simple typedef.
 #     @param self
-#         The (generally 
+#         The (generally
 #         {@link //apple_ref/perl/cl/HeaderDoc::Typedef Typedef})
 #         object.
 #     @param contents
@@ -721,7 +721,7 @@ sub constructor_or_destructor {
 #  */
 sub variables {
     my $self = shift;
-    if (@_) { 
+    if (@_) {
 	@{ $self->{VARIABLES} } = @_;
     }
     # foreach my $const (@{ $self->{VARIABLES}}) {print STDERR $const->name()."\n";}
@@ -739,7 +739,7 @@ sub variables {
 #  */
 sub constants {
     my $self = shift;
-    if (@_) { 
+    if (@_) {
         @{ $self->{CONSTANTS} } = @_;
     }
     # foreach my $const (@{ $self->{CONSTANTS}}) {print STDERR $const->name()."\n";}
@@ -777,7 +777,7 @@ sub masterEnum {
 #  */
 sub addVariable {
     my $self = shift;
-    if (@_) { 
+    if (@_) {
 	foreach my $item (@_) {
 		# print "ADDED $item to $self\n";
 		if ($self->can("addToVars")) {
@@ -804,7 +804,7 @@ sub addVariable {
 #  */
 sub addConstant {
     my $self = shift;
-    if (@_) { 
+    if (@_) {
 	foreach my $item (@_) {
         	push (@{$self->{CONSTANTS}}, $item);
 		# warn("Added constant to $self\n");
@@ -824,7 +824,7 @@ sub addConstant {
 #  */
 sub addToFields {
     my $self = shift;
-    if (@_) { 
+    if (@_) {
         push (@{$self->{FIELDS}}, @_);
     }
     return @{ $self->{FIELDS} };
@@ -1267,7 +1267,7 @@ sub see {
     my $self = shift;
     my $liststring = shift;
     my $type = "See";
-    my $apiUIDPrefix = HeaderDoc::APIOwner->apiUIDPrefix();    
+    my $apiUIDPrefix = HeaderDoc::APIOwner->apiUIDPrefix();
 
     my $dupDebug = 0;
 
@@ -1593,7 +1593,7 @@ sub getAttributes
 
 	my $declaredin = $self->declaredIn();
 	if ($declaredin && (
-		# $HeaderDoc::enable_custom_references || 
+		# $HeaderDoc::enable_custom_references ||
 		$self->isAPIOwner())) {
 
 	    my $blockclass = "\$\$customref_show_block\@\@";
@@ -2075,7 +2075,7 @@ sub generateLinkUID
 
     my $classname = sanitize($self->apiOwner()->rawname(), 1);
     my $name = sanitize($self->rawname(), 1);
-    my $apiUIDPrefix = HeaderDoc::APIOwner->apiUIDPrefix();    
+    my $apiUIDPrefix = HeaderDoc::APIOwner->apiUIDPrefix();
     my $uniquenumber = $HeaderDoc::uniquenumber++;
     my $uid = "//$apiUIDPrefix/doc/inheritedContent/$classname/$name/$uniquenumber";
 
@@ -2211,7 +2211,7 @@ sub apiuid {
 
     my $name = $self->apiuidname();
     $localDebug = 0;
-    my $className; 
+    my $className;
     my $lang = $self->sublang();
     my $class = ref($self) || $self;
 
@@ -2423,7 +2423,7 @@ sub genRefSub($$$$)
 
     if (length($className) && length($name)) { $className .= "/"; }
 
-    my $apiUIDPrefix = HeaderDoc::APIOwner->apiUIDPrefix();    
+    my $apiUIDPrefix = HeaderDoc::APIOwner->apiUIDPrefix();
     my $localDebug = 0;
 
     $lang = $self->apiRefLanguage($lang);
@@ -2601,7 +2601,7 @@ sub abstract {
     return $ret;
 }
 
-# /*! 
+# /*!
 #     @abstract
 #         Returns the abstract for XML use.
 #     @param self
@@ -3076,7 +3076,7 @@ sub listfixup
 				# we ran out of lines.  In either case, it's a
 				# blank line not followed by another numbered
 				# line, so we're done.
-	
+
 				print STDERR "OUTERBLANKLINE\n" if ($numListDebug);
 				$discussion .= "</li></ol>";
 				$oldinList = 0;
@@ -3158,7 +3158,7 @@ sub declaration {
     return $self->{DECLARATION};
 }
 
-# /*! 
+# /*!
 #     @abstract
 #         Gets/sets the prvate declaration for a C++ method.
 #     @param self
@@ -3347,7 +3347,7 @@ sub genRefCore($$$$$$)
 	# $enumname,
 	# $typedefname, $varname, $constname, $structisbrace, $macronamesref,
 	# $classregexp, $classbraceregexp, $classclosebraceregexp,
-	# $accessregexp, $requiredregexp, $propname, 
+	# $accessregexp, $requiredregexp, $propname,
         # $objcdynamicname, $objcsynthesizename, $moduleregexp, $definename,
 	# $functionisbrace, $classisbrace, $lbraceconditionalre, $lbraceunconditionalre, $assignmentwithcolon,
 	# $labelregexp, $parmswithcurlybraces, $superclasseswithcurlybraces, $soconstructor) = parseTokens($self->lang(), $self->sublang());
@@ -3459,7 +3459,7 @@ sub genRefCore($$$$$$)
     }
 
     my $ret = "";
-    my $apiUIDPrefix = HeaderDoc::APIOwner->apiUIDPrefix();    
+    my $apiUIDPrefix = HeaderDoc::APIOwner->apiUIDPrefix();
     my $type = "";
     my $className = "";
 
@@ -3767,9 +3767,9 @@ sub keywords
     # keywords that meet that criterion, please file a bug.
 
 
-    my %RubyKeywords = ( 
-	"assert" => 1, 
-	"break" => 1, 
+    my %RubyKeywords = (
+	"assert" => 1,
+	"break" => 1,
 	"while" => 1,
 	"if" => 1,
 	"for" => 1,
@@ -3780,11 +3780,11 @@ sub keywords
  	"nil" => 1,
 	"true" => 1,
 	"false" => 1,
-	"class" => 1, 
+	"class" => 1,
 	"module" => 1);
-    my %CKeywords = ( 
-	"assert" => 1, 
-	"break" => 1, 
+    my %CKeywords = (
+	"assert" => 1,
+	"break" => 1,
 	"auto" => 1, "const" => 1, "enum" => 1, "extern" => 7, "inline" => 1,
 	"__inline__" => 1, "__inline" => 1, "__asm" => 2, "__asm__" => 2,
         "__attribute__" => 2, "__typeof__" => 6,
@@ -3795,7 +3795,7 @@ sub keywords
  	"#pragma" => 1, "#include" => 1, "#import" => 1 , "NULL" => 1,
 	"true" => 1, "false" => 1);
     my %CppKeywords = (%CKeywords,
-	("class" => 1, 
+	("class" => 1,
 	"friend" => 1,
 	"mutable" => 1,
 	"namespace" => 1,
@@ -3823,21 +3823,21 @@ sub keywords
 	"NO" => 1 ));
     my %phpKeywords = (%CKeywords, ("function" => 1));
     my %javascriptKeywords = (
-	"abstract" => 1, 
-	# "assert" => 1, 
-	"break" => 1, 
-	# "byte" => 1, 
-	"case" => 1, 
-	"catch" => 1, 
-	# "char" => 1, 
-	"class" => 1, 
-	"const" => 1, 
-	"continue" => 1, 
-	"debugger" => 1, 
-	"default" => 1, 
-	"delete" => 1, 
-	"do" => 1, 
-	# "double" => 1, 
+	"abstract" => 1,
+	# "assert" => 1,
+	"break" => 1,
+	# "byte" => 1,
+	"case" => 1,
+	"catch" => 1,
+	# "char" => 1,
+	"class" => 1,
+	"const" => 1,
+	"continue" => 1,
+	"debugger" => 1,
+	"default" => 1,
+	"delete" => 1,
+	"do" => 1,
+	# "double" => 1,
 	"else" => 1,
 	"enum" => 1,
 	"export" => 1,
@@ -3883,16 +3883,16 @@ sub keywords
 	"while"  => 1,
 	"with"  => 1);
     my %javaKeywords = (
-	"abstract" => 1, 
-	"assert" => 1, 
-	"break" => 1, 
-	"case" => 1, 
-	"catch" => 1, 
-	"class" => 1, 
-	"const" => 1, 
-	"continue" => 1, 
-	"default" => 1, 
-	"do" => 1, 
+	"abstract" => 1,
+	"assert" => 1,
+	"break" => 1,
+	"case" => 1,
+	"catch" => 1,
+	"class" => 1,
+	"const" => 1,
+	"continue" => 1,
+	"default" => 1,
+	"do" => 1,
 	"else" => 1,
 	"enum" => 1,
 	"extends" => 3,
@@ -4210,7 +4210,7 @@ sub declarationInHTML {
 
 		return $xmldec;
 	}
-		
+
 	my $declaration = shift;
 
 	if (1 || $HeaderDoc::use_styles && !$disable_styles) {
@@ -4534,7 +4534,7 @@ sub sublang {
 sub updated {
     my $self = shift;
     my $localdebug = 0;
-    
+
     if (@_) {
 	my $updated = shift;
         # $self->{UPDATED} = shift;
@@ -4559,7 +4559,7 @@ sub updated {
 
                     my $century;
                     $century = `date +%C`;
-                    $century *= 100; 
+                    $century *= 100;
                     $year += $century;
                     # $year += 2000;
                     print STDERR "YEAR: $year" if ($localdebug);
@@ -4634,7 +4634,7 @@ sub updated {
 #  */
 sub linkageState {
     my $self = shift;
-    
+
     if (@_) {
         $self->{LINKAGESTATE} = shift;
     }
@@ -4651,7 +4651,7 @@ sub linkageState {
 #  */
 sub accessControl {
     my $self = shift;
-    
+
     if (@_) {
         $self->{ACCESSCONTROL} = shift;
     }
@@ -4667,7 +4667,7 @@ sub accessControl {
 sub printObject {
     my $self = shift;
     my $dec = $self->declaration();
- 
+
     print STDERR "------------------------------------\n";
     print STDERR "HeaderElement\n";
     print STDERR "name: $self->{NAME}\n";
@@ -4861,7 +4861,7 @@ sub setStyle
 
 # Note: the backslashes before the @ signs in the comment below are
 # to prevent HeaderDoc from interpreting the tags.
-# /*! 
+# /*!
 #     @abstract
 #         HTML/XML fixup code to insert superclass discussions
 #     @param self
@@ -5219,7 +5219,7 @@ sub documentationBlock
 	if (($checkDisc !~ /\S/) && ($abstract !~ /\S/)) {
 		my $linenum = $self->linenum();
         	warn "$fullpath:$linenum: No header or class discussion/abstract found. Creating dummy file for default content page.\n";
-		$abstract .= $HeaderDoc::defaultHeaderComment; # "Use the links in the table of contents to the left to access documentation.<br>\n";    
+		$abstract .= $HeaderDoc::defaultHeaderComment; # "Use the links in the table of contents to the left to access documentation.<br>\n";
 	}
     } else {
 	$newTOCinAPIOwner = 0;
@@ -5247,7 +5247,7 @@ sub documentationBlock
 	$contentString .= "<hr class=\"betweenAPIEntries\">";
     }
     # my $uid = "//$apiUIDPrefix/c/func/$name";
-       
+
     # registerUID($uid);
     # $contentString .= "<a name=\"$uid\"></a>\n"; # apple_ref marker
 
@@ -5362,7 +5362,7 @@ sub documentationBlock
     # if (length($abstract)) {
         # $contentString .= "<dt><i>Abstract:</i></dt>\n<dd>$abstract</dd>\n";
     # }
-    if ($newTOCinAPIOwner) { 
+    if ($newTOCinAPIOwner) {
 	if ($c) { $attstring .= "</table></div>\n"; }
 
 	# Otherwise we do this later.
@@ -5504,7 +5504,7 @@ sub documentationBlock
 	    }
         }
         if (length ($paramContentString)){
-            $contentString .= "<h5 class=\"tight\"><font face=\"Lucida Grande,Helvetica,Arial\">Included Defines</font></h5>\n";       
+            $contentString .= "<h5 class=\"tight\"><font face=\"Lucida Grande,Helvetica,Arial\">Included Defines</font></h5>\n";
             $contentString .= "<div class='param_indent'>\n";
             # $contentString .= "<table border=\"1\"  width=\"90%\">\n";
             # $contentString .= "<thead><tr><th>Name</th><th>Description</th></tr></thead>\n";
@@ -5559,7 +5559,7 @@ sub documentationBlock
 	    }
         }
         if (length ($paramContentString)){
-            $contentString .= "<h5 class=\"tight\"><font face=\"Lucida Grande,Helvetica,Arial\">$fieldHeading</font></h5>\n";       
+            $contentString .= "<h5 class=\"tight\"><font face=\"Lucida Grande,Helvetica,Arial\">$fieldHeading</font></h5>\n";
             $contentString .= "<div class='param_indent'>\n";
             # $contentString .= "<table border=\"1\"  width=\"90%\">\n";
             # $contentString .= "<thead><tr><th>Name</th><th>Description</th></tr></thead>\n";
@@ -5614,7 +5614,7 @@ sub documentationBlock
     }
     if (@constants) {
 	$showDiscussionHeading = 1;
-        $contentString .= "<h5 class=\"tight\"><font face=\"Lucida Grande,Helvetica,Arial\">Constants</font></h5>\n";       
+        $contentString .= "<h5 class=\"tight\"><font face=\"Lucida Grande,Helvetica,Arial\">Constants</font></h5>\n";
         $contentString .= "<div class='param_indent'>\n";
         $contentString .= "<dl>\n";
         # $contentString .= "<table border=\"1\"  width=\"90%\">\n";
@@ -5687,7 +5687,7 @@ sub documentationBlock
 
     # if (length($desc)) {$contentString .= "<p>$desc</p>\n"; }
     # $contentString .= "<dl>"; # MOVED LOWER
-    if (length($result)) { 
+    if (length($result)) {
 	$showDiscussionHeading = 1;
 	$contentString .= "<h5 class=\"tight\"><font face=\"Lucida Grande,Helvetica,Arial\">Return Value</font></h5><p><!-- begin return value -->";
         # $contentString .= "$func_or_method result</i></dt><dd>
@@ -5733,7 +5733,7 @@ sub documentationBlock
     if (!$HeaderDoc::suppress_local_variables) {
 	if (@local_variables) {
 		$showDiscussionHeading = 1;
-        	$contentString .= "<h5 class=\"tight\"><font face=\"Lucida Grande,Helvetica,Arial\">Local Variables</font></h5>\n";       
+        	$contentString .= "<h5 class=\"tight\"><font face=\"Lucida Grande,Helvetica,Arial\">Local Variables</font></h5>\n";
         	# $contentString .= "<table border=\"1\"  width=\"90%\">\n";
         	# $contentString .= "<thead><tr><th>Name</th><th>Description</th></tr></thead>\n";
 
@@ -5825,7 +5825,7 @@ sub documentationBlock
 
     my $value_fixed_contentString = $self->fixup_values($contentString);
 
-    return $value_fixed_contentString;    
+    return $value_fixed_contentString;
 }
 
 # /*!
@@ -5843,7 +5843,7 @@ sub documentationBlock
 #  */
 sub taggedParameters {
     my $self = shift;
-    if (@_) { 
+    if (@_) {
         @{ $self->{TAGGEDPARAMETERS} } = @_;
     }
     ($self->{TAGGEDPARAMETERS}) ? return @{ $self->{TAGGEDPARAMETERS} } : return ();
@@ -5892,7 +5892,7 @@ sub compositePageUID {
 #  */
 sub addTaggedParameter {
     my $self = shift;
-    if (@_) { 
+    if (@_) {
         push (@{$self->{TAGGEDPARAMETERS}}, @_);
 	my @arr = @{$self->{TAGGEDPARAMETERS}};
 	# print "OBJ IS ".\$arr[scalar(@arr) - 1]."\n";
@@ -5943,7 +5943,7 @@ sub taggedParsedCompare {
     my $apiOwner = $self->isAPIOwner();
 
     if (!$self->suppressChildren()) {
-      foreach my $myfield (@fields) { 
+      foreach my $myfield (@fields) {
 	# $taggednames{$myfield} = $myfield;
 	my $nscomp = $myfield->name();
 	$nscomp =~ s/\s*//sgo;
@@ -5971,7 +5971,7 @@ sub taggedParsedCompare {
 	}
       }
     }
-    foreach my $mytaggedparm (@tagged) { 
+    foreach my $mytaggedparm (@tagged) {
 		my $nscomp = $mytaggedparm->name();
 		$nscomp =~ s/\s*//sgo;
 		$nscomp =~ s/^\**//sso;
@@ -6166,7 +6166,7 @@ sub fixupParsedParameters
 #  */
 sub parsedParameters {
     my $self = shift;
-    if (@_) { 
+    if (@_) {
         @{ $self->{PARSEDPARAMETERS} } = @_;
     }
     ($self->{PARSEDPARAMETERS}) ? return @{ $self->{PARSEDPARAMETERS} } : return ();
@@ -6189,7 +6189,7 @@ sub parsedParameters {
 #  */
 sub addParsedParameter {
     my $self = shift;
-    if (@_) { 
+    if (@_) {
         push (@{$self->{PARSEDPARAMETERS}}, @_);
     }
     return @{ $self->{PARSEDPARAMETERS} };
@@ -6238,7 +6238,7 @@ sub parsedParamCompare {
 
     my @params = $self->parsedParameters();
 
-    if (scalar(@params) != scalar(@comparelist)) { 
+    if (scalar(@params) != scalar(@comparelist)) {
 	print STDERR "parsedParamCompare: function $name arg count differs (".
 		scalar(@params)." != ".  scalar(@comparelist) . ")\n" if ($localDebug);
 	return 0;
@@ -6273,7 +6273,7 @@ sub returntype {
     my $self = shift;
     my $localDebug = 0;
 
-    if (@_) { 
+    if (@_) {
         $self->{RETURNTYPE} = shift;
 	print STDERR "$self: SET RETURN TYPE TO ".$self->{RETURNTYPE}."\n" if ($localDebug);
     }
@@ -6384,7 +6384,7 @@ sub XMLdocumentationBlock {
     my $contentString;
 
     my $localDebug = 0;
-    
+
     my $type = "";
     my $isAPIOwner = $self->isAPIOwner();
     my $lang = $self->lang();
@@ -6421,10 +6421,10 @@ sub XMLdocumentationBlock {
 	if (!$self->{ASCONTENTSPROCESSED}) {
 		$class_self = $self->processAppleScriptFunctionContents();
 		# $class_self->dbprint();
-		my @classes = $class_self->classes();
-		foreach my $obj (@classes) {
-			push(@embeddedClasses, $obj);
-		}
+		# my @classes = $class_self->classes();
+		# foreach my $obj (@classes) {
+		# 	push(@embeddedClasses, $obj);
+		# }
 	}
     }
 
@@ -7016,7 +7016,7 @@ sub XMLdocumentationBlock {
         foreach my $element (@parsedparams) {
             my $pName = $self->textToXML($element->name());
 	    # if (!$element->can("type")) {
-		# cluck("ELEMENT TRACE: ".$element." (".$element->name().") in $self (".$self->name().") in ".$self->apiOwner()." (".$self->apiOwner()->name().")\n"); 
+		# cluck("ELEMENT TRACE: ".$element." (".$element->name().") in $self (".$self->name().") in ".$self->apiOwner()." (".$self->apiOwner()->name().")\n");
 		# my $headerObj = $HeaderDoc::headerObject;
 		# $headerObj->headerDump();
 		# next;
@@ -7191,7 +7191,7 @@ sub XMLdocumentationBlock {
 	if (length($contentString)) {
 		$contentString = $self->stripAppleRefs($contentString);
 		$compositePageString .= "<defines>$contentString</defines>";
-	}  
+	}
 
 	# @@@ Class generation code.  Important debug checkpoint.
 	my $classContent = "";
@@ -7329,7 +7329,7 @@ sub apirefSetup
 
     print "APIREFSETUP: IN $self LOCAL VARS: ".$#orig_local_variables."\n" if($localDebug);
 
-    if ($self->can("taggedParameters")){ 
+    if ($self->can("taggedParameters")){
 	print STDERR "setting params\n" if ($localDebug);
 	@params = $self->taggedParameters();
 	if ($self->can("parsedParameters")) {
@@ -7850,7 +7850,7 @@ sub processComment
 			my $fallthrough = 0;
 			my $cbName = $callbackObj->name();
                         print STDERR "In callback: field is '$field'\n" if ($localDebug);
-                        
+
                         if ($field =~ s/^(param|field)\s+//sio) {
                             $field =~ s/^\s+|\s+$//go;
                             $field =~ /(\w*)\s*(.*)/so;
@@ -7923,7 +7923,7 @@ sub processComment
                                         $self->attributelist("Template Field", $
 field);
                                         last SWITCH;
-                        };      
+                        };
 
 
                                 ($self->isAPIOwner() && $field =~ s/^templatefield(\s+)/$1/sio) && do {
@@ -8095,13 +8095,13 @@ field);
                     $cObj->autodeclaration(1);
                     $cObj->abstract($cDesc);
                     # $cObj->discussion($cDesc);
-                    $self->addVariable($cObj); 
+                    $self->addVariable($cObj);
 		    $self->apirefSetup();
                     my $name = $self->name();
                     if ($name eq "") {
                         $name = "$cName";
                         $self->firstconstname($name);
-                    }   
+                    }
                     last SWITCH;
 		};
             (($class =~ /HeaderDoc\:\:Enum/ || $class =~ /HeaderDoc\:\:Typedef/) && $field =~ s/^const(ant)?\s+//sio) &&
@@ -8119,12 +8119,12 @@ field);
                     $cObj->outputformat($self->outputformat);
                     $cObj->name($cName);
                     $cObj->discussion($cDesc);
-                    $self->addConstant($cObj); 
+                    $self->addConstant($cObj);
                     my $name = $self->name();
                     if ($name eq "") {
                         $name = "$cName";
                         $self->firstconstname($name);
-                    }   
+                    }
                     last SWITCH;
                 };
 
@@ -8620,7 +8620,7 @@ sub declaredIn
 #         This object.
 #     @param type
 #         The type of the doc navigator comment.  Currently valid
-#         values are <code>abstract</code>, <code>discussion</code> 
+#         values are <code>abstract</code>, <code>discussion</code>
 #         and <code>declaration</code>.
 #     @param startend
 #         The word <code>start</code> or <code>end</code>, depending
@@ -9153,7 +9153,7 @@ sub getMethodType
         	return "func";
 	}
 
-	my $typename = "instm";           
+	my $typename = "instm";
 
 	if ($class =~ /HeaderDoc::Method/) {
         	# Objective-C
@@ -9246,7 +9246,7 @@ sub namespace {
     my $self = shift;
     my $localDebug = 0;
 
-    if (@_) { 
+    if (@_) {
         $self->{NAMESPACE} = shift;
     }
     print STDERR "namespace ".$self->{NAMESPACE}."\n" if ($localDebug);
@@ -9290,7 +9290,7 @@ sub setAPIOBackReferences
 #         Adds a name to the {@link NAMEREFS} array.
 #     @discussion
 #         In {@link //apple_ref/doc/header/BlockParse.pm BlockParse.pm},
-#         HeaderDoc adds each object into the associative array 
+#         HeaderDoc adds each object into the associative array
 #         {@link HeaderDoc::namerefs}.
 #         Because Perl's garbage collection is a joke, this reference must
 #         be destroyed to free the object.
@@ -9354,12 +9354,12 @@ sub encoding
 #     @param resultstring
 #         The string to set.  (Optional.)
 #     @discussion
-#         This comes from the <code>\@result</code>, <code>\@return</code>, or 
+#         This comes from the <code>\@result</code>, <code>\@return</code>, or
 #         <code>\@returns</code> tag in the HeaderDoc comment.
 #  */
 sub result {
     my $self = shift;
-    
+
     if (@_) {
         $self->{RESULT} = shift;
     }
@@ -9377,7 +9377,7 @@ sub result {
 #         should be allowed to match against that type, a
 #         conversion occurs, in which a new object of a
 #         different type is created with the same contents.
-#         
+#
 #         When a conversion occurs, this function records the
 #         original requested type for later use.
 #     @param self
@@ -9392,7 +9392,7 @@ sub result {
 sub origType
 {
     my $self = shift;
-    
+
     if (@_) {
         my $origtype = shift;
         $self->{ORIGTYPE} = $origtype;
@@ -9417,7 +9417,7 @@ sub origType
 sub autoRelate
 {
     my $self = shift;
-    
+
     my @ar = ();
     if ($self->{AUTORELATE}) {
 	@ar = @{$self->{AUTORELATE}};
