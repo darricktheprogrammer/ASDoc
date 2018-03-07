@@ -1,28 +1,115 @@
 #!/usr/bin/env python3
+from xml.etree import ElementTree as et
+
 import pytest
 
-
-from asdocs import asdocs
-
-
-def test_asdocs_Given_Returns():
-	assert asdocs.function() == value
+from asdocs import lib
 
 
-@pytest.mark.integration
-def test_asdocs_Given_Returns():
-	"""integration test"""
-	assert asdocs.function() == value
+def load_xml(xml_text):
+	return et.fromstring(xml_text)
 
 
-class TestAsdocs():
+class TestParameterParsing:
+	@pytest.fixture(scope='class')
+	def single_parameter(self):
+		return (
+			'<parameter>\n'
+			'   <name>value</name>\n'
+			'   <desc>\n'
+			'       {}\n'
+			'   </desc>\n'
+			'</parameter>'
+			)
+
+	def test_ParseParameter_GivenSingleParameter_ParsesParameter(self, single_parameter):
+		param_text = single_parameter.format('<p>Item description</p>')
+		param = lib._parse_parameter(load_xml(param_text))
+		assert param['name'] == 'value'
+		assert param['description'] == 'Item description'
+		assert param['type'] == ''
+
+	def test_ParseParameter_GivenTypeInDescription_ParsesType(self, single_parameter):
+		param_text = single_parameter.format('<p>(String): Item description</p>')
+		param = lib._parse_parameter(load_xml(param_text))
+		assert param['description'] == 'Item description'
+		assert param['type'] == 'String'
+
+	def test_ParseParameter_GivenMultipleTypesInDescription_ParsesTypes(self, single_parameter):
+		param_text = single_parameter.format('<p>(String,Number): Item description</p>')
+		param = lib._parse_parameter(load_xml(param_text))
+		assert param['type'] == 'String,Number'
+
+	def test_ParseParameter_GivenTypeWithoutDescription_ParsesType(self, single_parameter):
+		# If there is no description you can forego the colon
+		param_text = single_parameter.format('<p>(String)</p>')
+		param = lib._parse_parameter(load_xml(param_text))
+		assert param['description'] == ''
+		assert param['type'] == 'String'
 
 
-    def setUp(self):
-        pass
+class TestDescriptionFormatting:
+	def test_FormatDescription_GivenMultilineDescription_CondensesDescriptionToOneLine(self):
+		# This is for the cases where documentation is wrapped at (most likely)
+		# column 80. There should not actually be line breaks. For that, the
+		# user should use paragraphs separated by two returns.
+		description = (
+			'<desc>\n'
+			'    <p>first line\n'
+			'second line</p>\n'
+			'</desc>'
+			)
+		formatted = lib._format_description(load_xml(description))
+		assert formatted == 'first line second line'
 
-    def tearDown(self):
-        pass
+	def test_FormatDescription_GivenMultipleParagraphs_ReturnsSeparatedLines(self):
+		description = (
+			'<desc>\n'
+			'    <p>first paragraph</p>\n'
+			'    <p>second paragraph</p>\n'
+			'</desc>'
+			)
+		formatted = lib._format_description(load_xml(description))
+		assert formatted == 'first paragraph\n\nsecond paragraph'
 
-    def test_000_something(self):
-        pass
+	def test_FormatDescription_EmptyDescriptionParagraph_ReturnsEmptyString(self):
+		description = (
+			'<desc>\n'
+			'    <p></p>\n'
+			'</desc>'
+			)
+		formatted = lib._format_description(load_xml(description))
+		assert formatted == ''
+
+	def test_FormatDescription_NullParagraph_ReturnsEmptyString(self):
+		description = (
+			'<desc>\n'
+			'    <p/>\n'
+			'</desc>'
+			)
+		formatted = lib._format_description(load_xml(description))
+		assert formatted == ''
+
+	def test_FormatDescription_ParagraphWithTrailingLineEnding_TrimsLineEnding(self):
+		description = (
+			'<desc>\n'
+			'    <p>A description\n'
+			'</p>\n'
+			'</desc>'
+			)
+		formatted = lib._format_description(load_xml(description))
+		assert formatted == 'A description'
+
+	def test_PopExamples_GivenSingleExample_ReturnsDescriptionAndExample(self):
+		description = (
+			'<desc>\n'
+			'    <p>A Description</p>\n'
+			'    <p>@example diff({"a", "b", "c", "d"}, {"a", "b", "e", "f"})\n'
+			'--> {"c", "d"}\n'
+			'</p>\n'
+			'</desc>'
+			)
+		examples, desc = lib._pop_examples(load_xml(description))
+		assert len(desc.findall('p')) == 1
+		assert len(examples) == 1
+		assert examples[0] == 'diff({"a", "b", "c", "d"}, {"a", "b", "e", "f"})\n--> {"c", "d"}'
