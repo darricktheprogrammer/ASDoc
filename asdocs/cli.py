@@ -114,6 +114,11 @@ def _set_logging():
 		level=logging.INFO
 		)
 
+def make_output_dir(parentdir, relative_dir):
+	output_dir = Path(parentdir) / relative_dir
+	output_dir.mkdir(parents=True, exist_ok=True)
+	return output_dir
+
 
 def main():
 	_set_logging()
@@ -122,14 +127,14 @@ def main():
 		raise TypeError(f"filepath '{args.filepath}' is not a directory.")
 	with tempfile.TemporaryDirectory() as headerdoc_out_dir:
 		generate_headerdoc_xml(HEADERDOC, args.filepath, headerdoc_out_dir)
-		output = collect_headerdoc_output(headerdoc_out_dir)
-		parsed_files = [lib.parse_file(f) for f in output]
-	documentation = filter_documented(parsed_files)
-	generated_docs_dir = Path(args.docs_dir) / RELATIVE_OUTPUT_DIR
-	generated_docs_dir.mkdir(parents=True, exist_ok=True)
-	for d in documentation:
-		docpath = generated_docs_dir / d['name'].replace('applescript', 'md')
-		markdown = render_template(d, DEFAULT_TEMPLATE)
+		xml_files = collect_headerdoc_output(headerdoc_out_dir)
+		parsed = [lib.parse_file(f) for f in xml_files]
+	documentation = filter_documented(parsed)
+	output_dir = make_output_dir(args.docs_dir, RELATIVE_OUTPUT_DIR)
+	for module in documentation:
+		filename = module['name'].replace('applescript', 'md')
+		docpath = output_dir / filename
+		markdown = render_template(module, DEFAULT_TEMPLATE)
 		# Jinja2 won't accept a PosixPath class as an argument. The Path must
 		# be converted to its string representation before attempting to write.
 		markdown.dump(str(docpath))
