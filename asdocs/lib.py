@@ -60,7 +60,7 @@ def _get_params(func):
 	if not paramlist:
 		paramlist = func.findall('parsedparameterlist/parsedparameter')
 		for param in paramlist:
-			param.find('name').text = param.find('type').text
+			param.find('name').text = param.find('type').text.strip()
 			desc = SubElement(param, 'desc')
 			p = SubElement(desc, 'p')
 			p.text = ''

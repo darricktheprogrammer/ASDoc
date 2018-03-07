@@ -142,6 +142,29 @@ class TestFunctionParsing:
 		assert len(func['params']) == 0
 		assert isinstance(func['params'], list)
 
+	def test_GetParams_GivenParsedParams_StripsWhitespace(self):
+		# For whatever reason, the parsed parameters come with a leading space.
+		# This is actually hidden in some of the pretty printed xml, which has
+		# whitespace removed. This test case is made of XML directly how it
+		# comes from headerdoc.
+		function_xml = (
+			'<function id="//apple_ref/applescript/func/contains_" lang="applescript"><name>contains_</name>'
+			'<parsedparameterlist>'
+			'<parsedparameter><type> x</type><name></name></parsedparameter>'
+			'<parsedparameter><type> ls</type><name></name></parsedparameter>'
+			'</parsedparameterlist>'
+			'<declaration><declaration_keyword>on</declaration_keyword> <declaration_function>contains_</declaration_function>('
+			'<declaration_param>x</declaration_param>,'
+			'<declaration_param>ls</declaration_param>)</declaration>'
+			'<desc><p>Return true if the list ls contains x</p></desc>'
+			'</function>'
+			)
+		func = lib._parse_function(load_xml(function_xml))
+		assert len(func['params']) == 2
+		arg1, arg2 = func['params']
+		assert arg1['name'] == 'x'
+		assert arg2['name'] == 'ls'
+
 
 def test_ParseFile_GivenFile_ParsesFile():
 	xml_file = Path(__file__).parent / 'data' / 'bare_bones.xml'
