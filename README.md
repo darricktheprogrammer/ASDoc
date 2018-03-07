@@ -1,7 +1,7 @@
 ASDocs
 ======
 
-Placeholder text for short description
+Work in progress
 
 more information not available yet.
 
