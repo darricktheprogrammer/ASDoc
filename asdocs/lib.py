@@ -32,7 +32,7 @@ def _format_description(desc):
 
 
 def _pop_param_type(desc):
-	type_regex = re.compile(r'^\((?P<paramtype>[A-z,]+)\)(:[ ])?')
+	type_regex = re.compile(r'^\((?P<paramtype>[A-z ,]+)\)(:[ ])?')
 	match = type_regex.search(desc)
 	if match:
 		return match.group('paramtype'), type_regex.sub('', desc)

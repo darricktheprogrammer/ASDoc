@@ -35,10 +35,15 @@ class TestParameterParsing:
 		assert param['description'] == 'Item description'
 		assert param['type'] == 'String'
 
-	def test_ParseParameter_GivenMultipleTypesInDescription_ParsesTypes(self, single_parameter):
+	def test_ParseParameter_GivenMultipleTypesWithoutSpace_ParsesTypes(self, single_parameter):
 		param_text = single_parameter.format('<p>(String,Number): Item description</p>')
 		param = lib._parse_parameter(load_xml(param_text))
 		assert param['type'] == 'String,Number'
+
+	def test_ParseParameter_GivenMultipleTypesWithSpace_ParsesTypes(self, single_parameter):
+		param_text = single_parameter.format('<p>(String, Number): Item description</p>')
+		param = lib._parse_parameter(load_xml(param_text))
+		assert param['type'] == 'String, Number'
 
 	def test_ParseParameter_GivenTypeWithoutDescription_ParsesType(self, single_parameter):
 		# If there is no description you can forego the colon
