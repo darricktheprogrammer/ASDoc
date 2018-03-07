@@ -13,7 +13,7 @@ def _pop_examples(desc):
 	for p in desc.findall('p'):
 		paragraph = p.text
 		if paragraph.startswith('@example'):
-			paragraph = paragraph.lstrip('@example ')
+			paragraph = paragraph.replace('@example ', '', 1)
 			paragraph = paragraph.strip()
 			examples.append(paragraph)
 			desc.remove(p)

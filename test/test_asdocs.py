@@ -120,6 +120,25 @@ class TestDescriptionFormatting:
 		assert len(examples) == 1
 		assert examples[0] == 'diff({"a", "b", "c", "d"}, {"a", "b", "e", "f"})\n--> {"c", "d"}'
 
+	def test_PopExamples_GivenFunctionNamedMap_DoesntRemoveMapDeclaration(self):
+		# the declaration `map(tostring, {1, 2, 3})` was being converted into
+		# just `(tostring, {1, 2, 3})`. I did not realize that `lstrip` removes
+		# a class of characters, not an exact string.
+		description = (
+			'<desc><p>Create a new list by passing each item of a list through a function.'
+			'</p>'
+			'<p>@example map(tostring, {1, 2, 3})'
+			'--&gt; {"1", "2", "3"}'
+			'</p>'
+			'<p>@example map(len, {"hello", "world", "I\'m", "here"})'
+			'--&gt; {5, 5, 3, 4}'
+			'</p>'
+			'</desc>'
+			)
+		examples, desc = lib._pop_examples(load_xml(description))
+		example = examples[0]
+		assert example[:4] == 'map('  # not using startswith because this error message is more informative
+
 
 class TestFunctionParsing:
 	def test_GetParams_NoParameters_ReturnsEmptyList(self):
