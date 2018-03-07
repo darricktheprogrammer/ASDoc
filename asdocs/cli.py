@@ -54,6 +54,18 @@ def collect_headerdoc_output(top_level):
 
 
 def filter_documented(parsed_files):
+	"""
+	Remove files that aren't documented.
+
+	Headerdoc will create XML files for all applescript files found in the
+	directory, whether they are documented or not. Remove anything that has
+	no data in the XML.
+
+	This still allows for the most basic of documentation, since as long as
+	either the file is documented at the file level, or headerdoc finds any
+	functions, classes, or globals documented, then the file will still be
+	included in ASDoc's output.
+	"""
 	documented_files = [
 		f for f in parsed_files
 		if f['description']
