@@ -11,7 +11,10 @@ import subprocess
 from pathlib import Path
 from argparse import ArgumentParser
 
+import jinja2
+
 from asdocs import lib
+
 
 log = logging.getLogger(__name__)
 
@@ -77,6 +80,25 @@ def filter_documented(parsed_files):
 	return documented_files
 
 
+def render_template(documentation, template_file):
+	with open(template_file, 'r') as f:
+		template_text = f.read()
+	# Jinja2 templates are hard to read without nesting, but Jinja retains
+	# whitespace. Strip all leading whitespace so that the template can use
+	# nesting.
+	#
+	# This means that things such as nested lists and indented code cannot
+	# be used. Only fenced code blocks and single level lists are available.
+	stripped_lines = [line.lstrip() for line in template_text.splitlines()]
+	template_text = '\n'.join(stripped_lines)
+	env = jinja2.Environment(
+		loader=jinja2.BaseLoader(),
+		trim_blocks=True,
+		)
+	template = env.from_string(template_text)
+	return template.stream(documentation)
+
+
 def main():
 	logging.basicConfig(
 		stream=sys.stdout,
@@ -93,7 +115,16 @@ def main():
 		generate_headerdoc_xml(headerDoc2HTML, args.filepath, headerdoc_out_dir)
 		output = collect_headerdoc_output(headerdoc_out_dir)
 		parsed_files = [lib.parse_file(f) for f in output]
-		documentation = filter_documented(parsed_files)
+	documentation = filter_documented(parsed_files)
+	template_file = Path(__file__).parent / 'templates' / 'default.md'
+	generated_docs_dir = Path(args.docs_dir) / 'api-reference'
+	generated_docs_dir.mkdir(parents=True, exist_ok=True)
+	for d in documentation:
+		docpath = generated_docs_dir / d['name'].replace('applescript', 'md')
+		markdown = render_template(d, template_file)
+		# Jinja2 won't accept a PosixPath class as an argument. The Path must
+		# be converted to its string representation before attempting to write.
+		markdown.dump(str(docpath))
 
 
 if __name__ == "__main__":
