@@ -118,3 +118,25 @@ class TestDescriptionFormatting:
 		assert len(desc.findall('p')) == 1
 		assert len(examples) == 1
 		assert examples[0] == 'diff({"a", "b", "c", "d"}, {"a", "b", "e", "f"})\n--> {"c", "d"}'
+
+
+class TestFunctionParsing:
+	def test_GetParams_NoParameters_ReturnsEmptyList(self):
+		function_xml = (
+			'<function id="//apple_ref/applescript/func/join" lang="applescript">\n'
+			'	<name>join</name>\n'
+			'	<result>\n'
+			'		<p>(String)</p>\n'
+			'	</result>\n'
+			'	<declaration>\n'
+			'		<declaration_keyword>on</declaration_keyword>\n'
+			'		<declaration_function>join</declaration_function>()\n'
+			'	</declaration>\n'
+			'	<desc>\n'
+			'		<p>Convert a list to string, inserting a delimiter between each list item.</p>\n'
+			'	</desc>\n'
+			'</function>'
+			)
+		func = lib._parse_function(load_xml(function_xml))
+		assert len(func['params']) == 0
+		assert isinstance(func['params'], list)
