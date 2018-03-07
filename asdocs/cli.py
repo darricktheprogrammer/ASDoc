@@ -106,13 +106,17 @@ def render_template(documentation, template_file):
 	return template.stream(documentation)
 
 
-def main():
+def _set_logging():
 	logging.basicConfig(
 		stream=sys.stdout,
 		format='%(asctime)s.%(msecs)03d [%(levelname)s] %(message)s',
 		datefmt='%Y-%m-%d %I:%M:%S',
 		level=logging.INFO
 		)
+
+
+def main():
+	_set_logging()
 	args = get_args()
 	if not args.filepath.is_dir():
 		raise TypeError(f"filepath '{args.filepath}' is not a directory.")
