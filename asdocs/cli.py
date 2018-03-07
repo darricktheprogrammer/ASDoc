@@ -111,7 +111,7 @@ def main():
 		stream=sys.stdout,
 		format='%(asctime)s.%(msecs)03d [%(levelname)s] %(message)s',
 		datefmt='%Y-%m-%d %I:%M:%S',
-		level=logging.DEBUG
+		level=logging.INFO
 		)
 	args = get_args()
 	if not args.filepath.is_dir():
