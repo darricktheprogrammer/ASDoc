@@ -4,6 +4,7 @@ Docstring for main module in ASDocs.
 A longer description...
 """
 from xml.etree.ElementTree import SubElement
+from xml.etree import ElementTree as et
 import re
 
 
@@ -162,3 +163,17 @@ def parse(xml):
 		Dict
 	"""
 	return _parse_script(xml)
+
+
+def parse_file(fp):
+	"""
+	Same as `parse`, but reads the xml from a file.
+
+	Args:
+		fp (String, Path): Absolute filepath to the XML file to parse
+	Returns:
+		Dict
+	"""
+	with open(fp, 'r') as xml_file:
+		xml = et.parse(xml_file).getroot()
+	return parse(xml)

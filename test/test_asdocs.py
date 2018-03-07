@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 from xml.etree import ElementTree as et
+from pathlib import Path
 
 import pytest
 
@@ -140,3 +141,9 @@ class TestFunctionParsing:
 		func = lib._parse_function(load_xml(function_xml))
 		assert len(func['params']) == 0
 		assert isinstance(func['params'], list)
+
+
+def test_ParseFile_GivenFile_ParsesFile():
+	xml_file = Path(__file__).parent / 'data' / 'bare_bones.xml'
+	parsed = lib.parse_file(xml_file)
+	assert parsed['name'] == 'functools.applescript'
