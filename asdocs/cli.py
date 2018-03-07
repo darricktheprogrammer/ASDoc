@@ -19,6 +19,13 @@ from asdocs import lib
 log = logging.getLogger(__name__)
 
 
+_package_dir = Path(__file__).parent
+HEADERDOC = _package_dir / 'vendor' / 'headerdoc-8.9.28' / 'headerDoc2HTML.pl'
+DEFAULT_TEMPLATE = _package_dir / 'templates' / 'default.md'
+RELATIVE_OUTPUT_DIR = 'api-reference'
+DEFAULT_RELATIVE_DOCS_DIR = 'docs'
+
+
 def get_args():
 	parser = ArgumentParser(description=__doc__)
 	parser.add_argument("filepath",
@@ -27,14 +34,14 @@ def get_args():
 						' applescript files to be documented.')
 	parser.add_argument("--docs_dir",
 						type=str,
-						default='docs',
+						default=DEFAULT_RELATIVE_DOCS_DIR,
 						help='The absolute path to a directory containing'
 						' project documentation. This doubles as the MkDocs'
 						' top level directory. Default is `{filepath}/docs`.')
 	args = parser.parse_args()
 	args.filepath = Path(args.filepath)
-	if args.docs_dir == 'docs':
-		args.docs_dir = args.filepath / 'docs'
+	if args.docs_dir == DEFAULT_RELATIVE_DOCS_DIR:
+		args.docs_dir = args.filepath / DEFAULT_RELATIVE_DOCS_DIR
 	return args
 
 
@@ -109,19 +116,16 @@ def main():
 	args = get_args()
 	if not args.filepath.is_dir():
 		raise TypeError(f"filepath '{args.filepath}' is not a directory.")
-	headerdoc_dir = Path(__file__).parents[1] / 'vendor' / 'headerdoc-8.9.28'
-	headerDoc2HTML = headerdoc_dir / 'headerDoc2HTML.pl'
 	with tempfile.TemporaryDirectory() as headerdoc_out_dir:
-		generate_headerdoc_xml(headerDoc2HTML, args.filepath, headerdoc_out_dir)
+		generate_headerdoc_xml(HEADERDOC, args.filepath, headerdoc_out_dir)
 		output = collect_headerdoc_output(headerdoc_out_dir)
 		parsed_files = [lib.parse_file(f) for f in output]
 	documentation = filter_documented(parsed_files)
-	template_file = Path(__file__).parent / 'templates' / 'default.md'
-	generated_docs_dir = Path(args.docs_dir) / 'api-reference'
+	generated_docs_dir = Path(args.docs_dir) / RELATIVE_OUTPUT_DIR
 	generated_docs_dir.mkdir(parents=True, exist_ok=True)
 	for d in documentation:
 		docpath = generated_docs_dir / d['name'].replace('applescript', 'md')
-		markdown = render_template(d, template_file)
+		markdown = render_template(d, DEFAULT_TEMPLATE)
 		# Jinja2 won't accept a PosixPath class as an argument. The Path must
 		# be converted to its string representation before attempting to write.
 		markdown.dump(str(docpath))
