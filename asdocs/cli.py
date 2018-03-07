@@ -46,13 +46,13 @@ def generate_headerdoc_xml(headerDoc2HTML, input_dir, output_dir):
 		'--quiet',
 		'--output-directory', output_dir,
 		*applescript_files]
-	log.info(f'running command: {command}')
+	log.debug(f'running command: {command}')
 	subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
 
 def collect_headerdoc_output(top_level):
 	all_xml_files = list(Path(top_level).glob('**/*.xml'))
-	log.debug(f'found {len(all_xml_files)} headerdoc files')
+	log.info(f'found {len(all_xml_files)} headerdoc files')
 	return all_xml_files
 
 
@@ -76,7 +76,7 @@ def filter_documented(parsed_files):
 		or f['classes']
 		or f['globals']
 		]
-	log.debug(f'found {len(documented_files)} documented files')
+	log.info(f'found {len(documented_files)} documented files')
 	return documented_files
 
 
