@@ -1,5 +1,6 @@
 # #!/usr/bin/env python3
 from pathlib import Path
+import shutil
 
 import pytest
 
@@ -20,6 +21,17 @@ class TestDocumentGeneration:
 		xml_files_path = TEST_PATH / 'data'
 		xml_files = cli.collect_headerdoc_output(xml_files_path)
 		assert len(xml_files) == 1
+
+	def test_Main_GivenDocumentedFiles_GeneratesDocumentation(self, tmpdir):
+		source_files_path = TEST_PATH / 'data' / 'source_files'
+		tmpdir = Path(tmpdir)
+		tmp_source = tmpdir / source_files_path.stem
+		shutil.copytree(source_files_path, tmp_source)
+		rendered = cli._main(tmp_source, tmp_source / 'docs')
+		assert len(rendered) == 3
+		filenames = [fp.name for fp, _ in rendered]
+		expected_names = ['functools.md', 'list.md', 'string.md']
+		assert all(name in filenames for name in expected_names)
 
 
 class TestFiltering:
