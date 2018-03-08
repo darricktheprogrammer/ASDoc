@@ -20,3 +20,88 @@ class TestDocumentGeneration:
 		xml_files_path = TEST_PATH / 'data'
 		xml_files = cli.collect_headerdoc_output(xml_files_path)
 		assert len(xml_files) == 1
+
+
+class TestFiltering:
+	@pytest.fixture
+	def parsed_documentation(self):
+		return [
+			{
+				'name': 'list.applescript',
+				'description': 'A Description',
+				'functions': [
+					{'func1': None},
+					{'func2': None},
+				],
+				'classes': [],
+				'globals': [],
+			},
+			{
+				'name': 'functools.applescript',
+				'description': 'A Description',
+				'functions': [
+					{'func1': None},
+					{'func2': None},
+				],
+				'classes': [
+					{'class1': None}
+				],
+				'globals': [],
+			},
+			{
+				'name': 'string.applescript',
+				'description': 'A Description',
+				'functions': [
+					{'func1': None},
+					{'func2': None},
+				],
+				'classes': [],
+				'globals': [
+					{'global1': None}
+				]
+			},
+			{
+				'name': 'undefined',
+				'description': '',
+				'functions': [],
+				'classes': [],
+				'globals': []
+			}
+		]
+
+	def test_FilterDocumented_AllDocumented_ReturnsAll(self, parsed_documentation):
+		documented = parsed_documentation[:3]
+		filtered = cli.filter_documented(documented)
+		assert len(documented) == 3
+		assert len(filtered) == 3
+
+	def test_FilterDocumented_PartialDocumentation_ReturnsDocumented(self, parsed_documentation):
+		filtered = cli.filter_documented(parsed_documentation)
+		assert len(parsed_documentation) == 4
+		assert len(filtered) == 3
+
+	def test_FilterDocumented_OnlyDescriptionDefined_ReturnsDocumented(self, parsed_documentation):
+		documented = parsed_documentation[:1]
+		documented[0]['functions'] = []
+		filtered = cli.filter_documented(documented)
+		assert len(filtered) == 1
+
+	def test_FilterDocumented_OnlyFunctionsDefined_ReturnsDocumented(self, parsed_documentation):
+		documented = parsed_documentation[:1]
+		documented[0]['description'] = ''
+		filtered = cli.filter_documented(documented)
+		assert len(filtered) == 1
+
+	def test_FilterDocumented_OnlyClassesDefined_ReturnsDocumented(self, parsed_documentation):
+		documented = parsed_documentation[1:2]
+		documented[0]['description'] = ''
+		documented[0]['functions'] = []
+		filtered = cli.filter_documented(documented)
+		assert len(filtered) == 1
+
+	def test_FilterDocumented_OnlyGlobalsDefined_ReturnsDocumented(self, parsed_documentation):
+		documented = parsed_documentation[2:3]
+		documented[0]['description'] = ''
+		documented[0]['functions'] = []
+		filtered = cli.filter_documented(documented)
+		assert len(filtered) == 1
