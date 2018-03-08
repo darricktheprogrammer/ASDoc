@@ -14,5 +14,4 @@ class TestDocumentGeneration:
 		source_files_path = TEST_PATH / 'data' / 'source_files'
 		cli.generate_headerdoc_xml(cli.HEADERDOC, source_files_path, tmpdir)
 		xml_files = list(tmpdir.visit(fil='*.xml'))
-		print(xml_files)
 		assert len(xml_files) == 3
