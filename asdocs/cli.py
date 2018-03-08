@@ -12,6 +12,7 @@ from pathlib import Path
 from argparse import ArgumentParser
 
 import jinja2
+import yaml
 
 from asdocs import lib
 
@@ -23,6 +24,7 @@ _package_dir = Path(__file__).parent
 HEADERDOC = _package_dir / 'vendor' / 'headerdoc-8.9.28' / 'headerDoc2HTML.pl'
 DEFAULT_TEMPLATE = _package_dir / 'templates' / 'default.md'
 RELATIVE_OUTPUT_DIR = 'api-reference'
+RELATIVE_MKDOCS_CONFIG_PATH = 'mkdocs.yml'
 DEFAULT_RELATIVE_DOCS_DIR = 'docs'
 
 
@@ -106,6 +108,31 @@ def get_rendered_file_path(output_dir, file_name):
 	return output_dir / file_name.replace('applescript', 'md')
 
 
+def _load_mkdocs_config(config_path):
+	with open(config_path, 'r+') as config_file:
+		config = yaml.load(config_file)
+	return config
+
+
+def update_mkdocs_config_with_api_pages(config, modules, docs_dir):
+	def _get_dict_from_list_by_key(ls, key):
+		for item in ls:
+			if key in item.keys():
+				return item[key]
+		raise AttributeError(f"No item with key '{key}' in {ls}")
+
+	config_pages = config.setdefault('pages', [])
+	try:
+		api_reference = _get_dict_from_list_by_key(config_pages, 'API Reference')
+	except AttributeError:
+		config['pages'].append({'API Reference': []})
+		api_reference = config['pages'][-1]['API Reference']
+	for module in modules:
+		relative_path = module['path'].replace(docs_dir, '', 1)
+		api_reference.append({module['name']: relative_path})
+	return config
+
+
 def _main(filepath, docs_dir):
 	if not filepath.is_dir():
 		raise TypeError(f"filepath '{filepath}' is not a directory.")
@@ -115,15 +142,17 @@ def _main(filepath, docs_dir):
 		parsed = [lib.parse_file(f) for f in xml_files]
 	documentation = filter_documented(parsed)
 	output_dir = make_output_dir(docs_dir, RELATIVE_OUTPUT_DIR)
-	rendered = []
 	for module in documentation:
 		docpath = get_rendered_file_path(output_dir, module['name'])
 		markdown = render_template(module, DEFAULT_TEMPLATE)
 		# Jinja2 won't accept a PosixPath class as an argument. The Path must
 		# be converted to its string representation before attempting to write.
 		markdown.dump(str(docpath))
-		rendered.append((docpath, markdown))
-	return rendered
+		module['rendered_text'] = markdown
+		module['path'] = docpath
+	mkdocs_config = _load_mkdocs_config(filepath / RELATIVE_MKDOCS_CONFIG_PATH)
+	update_mkdocs_config_with_api_pages(mkdocs_config, documentation, docs_dir)
+	return documentation
 
 
 def main():
