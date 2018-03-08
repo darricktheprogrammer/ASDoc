@@ -105,3 +105,10 @@ class TestFiltering:
 		documented[0]['functions'] = []
 		filtered = cli.filter_documented(documented)
 		assert len(filtered) == 1
+
+
+def test_GetRenderedFilePath_GivenFileName_ReturnsFilePath():
+	output_dir = Path('/a/directory')
+	filename = 'list.applescript'
+	docpath = cli.get_rendered_file_path(output_dir, filename)
+	assert str(docpath) == '/a/directory/list.md'

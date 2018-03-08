@@ -121,6 +121,10 @@ def make_output_dir(parentdir, relative_dir):
 	return output_dir
 
 
+def get_rendered_file_path(output_dir, file_name):
+	return output_dir / file_name.replace('applescript', 'md')
+
+
 def main():
 	_set_logging()
 	args = get_args()
@@ -133,8 +137,7 @@ def main():
 	documentation = filter_documented(parsed)
 	output_dir = make_output_dir(args.docs_dir, RELATIVE_OUTPUT_DIR)
 	for module in documentation:
-		filename = module['name'].replace('applescript', 'md')
-		docpath = output_dir / filename
+		docpath = get_rendered_file_path(output_dir, module['name'])
 		markdown = render_template(module, DEFAULT_TEMPLATE)
 		# Jinja2 won't accept a PosixPath class as an argument. The Path must
 		# be converted to its string representation before attempting to write.
