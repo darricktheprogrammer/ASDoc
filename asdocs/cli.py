@@ -26,25 +26,6 @@ RELATIVE_OUTPUT_DIR = 'api-reference'
 DEFAULT_RELATIVE_DOCS_DIR = 'docs'
 
 
-def get_args():
-	parser = ArgumentParser(description=__doc__)
-	parser.add_argument("filepath",
-						type=str,
-						help='The absolute path to a directory containing'
-						' applescript files to be documented.')
-	parser.add_argument("--docs_dir",
-						type=str,
-						default=DEFAULT_RELATIVE_DOCS_DIR,
-						help='The absolute path to a directory containing'
-						' project documentation. This doubles as the MkDocs'
-						' top level directory. Default is `{filepath}/docs`.')
-	args = parser.parse_args()
-	args.filepath = Path(args.filepath)
-	if args.docs_dir == DEFAULT_RELATIVE_DOCS_DIR:
-		args.docs_dir = args.filepath / DEFAULT_RELATIVE_DOCS_DIR
-	return args
-
-
 def generate_headerdoc_xml(headerDoc2HTML, input_dir, output_dir):
 	applescript_files = [f for f in input_dir.glob('**/*.applescript')]
 	command = [
@@ -125,23 +106,44 @@ def get_rendered_file_path(output_dir, file_name):
 	return output_dir / file_name.replace('applescript', 'md')
 
 
-def main():
-	_set_logging()
-	args = get_args()
-	if not args.filepath.is_dir():
-		raise TypeError(f"filepath '{args.filepath}' is not a directory.")
+def _main(filepath, docs_dir):
+	if not filepath.is_dir():
+		raise TypeError(f"filepath '{filepath}' is not a directory.")
 	with tempfile.TemporaryDirectory() as headerdoc_out_dir:
-		generate_headerdoc_xml(HEADERDOC, args.filepath, headerdoc_out_dir)
+		generate_headerdoc_xml(HEADERDOC, filepath, headerdoc_out_dir)
 		xml_files = collect_headerdoc_output(headerdoc_out_dir)
 		parsed = [lib.parse_file(f) for f in xml_files]
 	documentation = filter_documented(parsed)
-	output_dir = make_output_dir(args.docs_dir, RELATIVE_OUTPUT_DIR)
+	output_dir = make_output_dir(docs_dir, RELATIVE_OUTPUT_DIR)
+	rendered = []
 	for module in documentation:
 		docpath = get_rendered_file_path(output_dir, module['name'])
 		markdown = render_template(module, DEFAULT_TEMPLATE)
 		# Jinja2 won't accept a PosixPath class as an argument. The Path must
 		# be converted to its string representation before attempting to write.
 		markdown.dump(str(docpath))
+		rendered.append((docpath, markdown))
+	return rendered
+
+
+def main():
+	_set_logging()
+	parser = ArgumentParser(description=__doc__)
+	parser.add_argument("filepath",
+						type=str,
+						help='The absolute path to a directory containing'
+						' applescript files to be documented.')
+	parser.add_argument("--docs_dir",
+						type=str,
+						default=DEFAULT_RELATIVE_DOCS_DIR,
+						help='The absolute path to a directory containing'
+						' project documentation. This doubles as the MkDocs'
+						' top level directory. Default is `{filepath}/docs`.')
+	args = parser.parse_args()
+	args.filepath = Path(args.filepath)
+	if args.docs_dir == DEFAULT_RELATIVE_DOCS_DIR:
+		args.docs_dir = args.filepath / DEFAULT_RELATIVE_DOCS_DIR
+	return _main(args.filepath, args.docs_dir)
 
 
 if __name__ == "__main__":
