@@ -114,11 +114,6 @@ def _set_logging():
 		level=logging.INFO
 		)
 
-def make_output_dir(parentdir, relative_dir):
-	output_dir = Path(parentdir) / relative_dir
-	output_dir.mkdir(parents=True, exist_ok=True)
-	return output_dir
-
 
 def make_output_dir(parentdir, relative_dir):
 	output_dir = Path(parentdir) / relative_dir
