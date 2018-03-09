@@ -41,8 +41,8 @@
 			{{ example }}
 			```
 		{% endfor %}
-		<br/>
 	{% endif %}
+	<br/>
 {% endmacro %}
 {{ description }}
 
