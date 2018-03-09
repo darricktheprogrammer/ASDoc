@@ -9,6 +9,15 @@ from asdocs import cli
 TEST_PATH = Path(__file__).parent
 
 
+@pytest.fixture
+def tmp_source(tmpdir):
+	source_files_path = TEST_PATH / 'data' / 'source_files'
+	tmpdir = Path(tmpdir)
+	tmp = tmpdir / source_files_path.stem
+	shutil.copytree(source_files_path, tmp)
+	return tmp
+
+
 @pytest.mark.integration
 class TestDocumentGeneration:
 	def test_GenerateHeaderdocXml_GivenDocumentedFiles_GeneratesDocumentation(self, tmpdir):
@@ -22,14 +31,11 @@ class TestDocumentGeneration:
 		xml_files = cli.collect_headerdoc_output(xml_files_path)
 		assert len(xml_files) == 1
 
-	def test_Main_GivenDocumentedFiles_GeneratesDocumentation(self, tmpdir):
-		source_files_path = TEST_PATH / 'data' / 'source_files'
-		tmpdir = Path(tmpdir)
-		tmp_source = tmpdir / source_files_path.stem
-		shutil.copytree(source_files_path, tmp_source)
-		documentation = cli._main(tmp_source, tmp_source / 'docs')
+	def test_Main_GivenDocumentedFiles_GeneratesDocumentation(self, tmp_source):
+		docspath = tmp_source / 'docs'
+		documentation = cli._main(tmp_source, tmp_source / docspath)
 		assert len(documentation) == 3
-		generated_files_path = tmp_source / 'docs' / 'api-reference'
+		generated_files_path = docspath / 'api-reference'
 		filenames = [f.name for f in generated_files_path.iterdir()]
 		expected_names = ['functools.md', 'list.md', 'string.md']
 		assert all(name in filenames for name in expected_names)
