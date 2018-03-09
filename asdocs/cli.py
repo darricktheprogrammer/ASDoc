@@ -137,6 +137,11 @@ def update_mkdocs_config_with_api_pages(config, modules, docs_dir):
 	return config
 
 
+def write_mkdocs_config(config, pth):
+	with open(pth, 'w') as config_file:
+		config_file.write(yaml.dump(config, default_flow_style=False))
+
+
 def _main(filepath, docs_dir):
 	if not filepath.is_dir():
 		raise TypeError(f"filepath '{filepath}' is not a directory.")
@@ -156,6 +161,7 @@ def _main(filepath, docs_dir):
 		module['path'] = docpath
 	mkdocs_config = _load_mkdocs_config(filepath / RELATIVE_MKDOCS_CONFIG_PATH)
 	update_mkdocs_config_with_api_pages(mkdocs_config, documentation, docs_dir)
+	write_mkdocs_config(mkdocs_config, filepath / RELATIVE_MKDOCS_CONFIG_PATH)
 	return documentation
 
 

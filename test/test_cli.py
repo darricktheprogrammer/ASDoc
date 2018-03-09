@@ -97,6 +97,28 @@ class TestMkDocConfiguration:
 		api_reference = config['pages'][0]['API Reference']
 		assert len(api_reference) == 4
 
+	@pytest.mark.integration
+	def test_WriteMkdocsConfig_GivenDocumentedFiles_WritesPagesToMkdocsConfig(self, tmp_source, pages):
+		config = {
+			'site_name': 'ASDoc Test',
+			'pages': [
+				{'Home': 'index.md'}
+			]
+		}
+		expected = (
+			'pages:\n'
+			'- Home: index.md\n'
+			'- API Reference:\n'
+			'  - list.applescript: api-reference/list.md\n'
+			'  - string.applescript: api-reference/string.md\n'
+			'  - functools.applescript: api-reference/functools.md'
+			)
+		config = cli.update_mkdocs_config_with_api_pages(config, pages, '/a/path')
+		config = cli.write_mkdocs_config(config, tmp_source / 'mkdocs.yml')
+		with open(tmp_source / 'mkdocs.yml') as mkdocs_config:
+			config_text = mkdocs_config.read()
+		assert expected in config_text
+
 
 class TestFiltering:
 	@pytest.fixture
