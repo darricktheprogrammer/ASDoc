@@ -109,7 +109,7 @@ def get_rendered_file_path(output_dir, file_name):
 
 
 def _load_mkdocs_config(config_path):
-	with open(config_path, 'r+') as config_file:
+	with open(config_path, 'r') as config_file:
 		config = yaml.load(config_file)
 	return config
 
