@@ -27,11 +27,69 @@ class TestDocumentGeneration:
 		tmpdir = Path(tmpdir)
 		tmp_source = tmpdir / source_files_path.stem
 		shutil.copytree(source_files_path, tmp_source)
-		rendered = cli._main(tmp_source, tmp_source / 'docs')
-		assert len(rendered) == 3
-		filenames = [fp.name for fp, _ in rendered]
+		documentation = cli._main(tmp_source, tmp_source / 'docs')
+		assert len(documentation) == 3
+		generated_files_path = tmp_source / 'docs' / 'api-reference'
+		filenames = [f.name for f in generated_files_path.iterdir()]
 		expected_names = ['functools.md', 'list.md', 'string.md']
 		assert all(name in filenames for name in expected_names)
+
+
+# @pytest.mark.usefixtures("cleandir")
+class TestMkDocConfiguration:
+	@pytest.fixture(scope='class')
+	def pages(self):
+		return [
+			{'name': 'list.applescript', 'path': '/a/path/api-reference/list.md'},
+			{'name': 'string.applescript', 'path': '/a/path/api-reference/string.md'},
+			{'name': 'functools.applescript', 'path': '/a/path/api-reference/functools.md'},
+		]
+
+	def _get_api_reference(self, config_pages):
+		"""
+		Mkdocs uses a list of dictionaries for sections, so you can't just call
+		a key to find a section, because the section name is the key. Loop
+		through all pages looking for the right section and return it.
+		"""
+		for p in config_pages:
+			print(p)
+			if p.keys()[0] == 'API Reference':
+				return p
+		return []
+
+	def test_UpdateMkDocsConfigWithApiPages_NoPagesDefinedInConfig_AddsNewPagesToConfig(self, pages):
+		config = {'site_name': 'ASDoc Test'}
+		config = cli.update_mkdocs_config_with_api_pages(config, pages, '/a/path/')
+		api_reference = config['pages'][0]['API Reference']
+		assert len(api_reference) == 3
+
+	def test_UpdateMkDocsConfigWithApiPages_OnePageAlreadyDefinedInConfig_AddsNewPagesToConfig(self, pages):
+		config = {
+			'site_name': 'ASDoc Test',
+			'pages': [
+				{'Home': 'index.md'}
+			]
+		}
+		config = cli.update_mkdocs_config_with_api_pages(config, pages, '/a/path/')
+		pages = config['pages']
+		api_reference = pages[1]['API Reference']
+		assert len(pages) == 2
+		assert len(api_reference) == 3
+
+	def test_UpdateMkDocsConfigWithApiPages_APIPageAlreadyExists_AppendsNewPagesToConfig(self, pages):
+		config = {
+			'site_name': 'ASDoc Test',
+			'pages': [
+				{
+					'API Reference': [
+						{'math.applescript': 'api-reference/list.md'}
+					]
+				}
+			]
+		}
+		config = cli.update_mkdocs_config_with_api_pages(config, pages, '/a/path/')
+		api_reference = config['pages'][0]['API Reference']
+		assert len(api_reference) == 4
 
 
 class TestFiltering:
