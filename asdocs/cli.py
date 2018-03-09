@@ -121,6 +121,9 @@ def update_mkdocs_config_with_api_pages(config, modules, docs_dir):
 				return item[key]
 		raise AttributeError(f"No item with key '{key}' in {ls}")
 
+	def _strip_absolute_path(pth, absolute_path):
+		return str(pth).replace(str(docs_dir), '')
+
 	config_pages = config.setdefault('pages', [])
 	try:
 		api_reference = _get_dict_from_list_by_key(config_pages, 'API Reference')
@@ -128,7 +131,7 @@ def update_mkdocs_config_with_api_pages(config, modules, docs_dir):
 		config['pages'].append({'API Reference': []})
 		api_reference = config['pages'][-1]['API Reference']
 	for module in modules:
-		relative_path = module['path'].replace(docs_dir, '', 1)
+		relative_path = _strip_absolute_path(module['path'], docs_dir)
 		api_reference.append({module['name']: relative_path})
 	return config
 

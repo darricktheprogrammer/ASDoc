@@ -27,9 +27,10 @@ class TestDocumentGeneration:
 		tmpdir = Path(tmpdir)
 		tmp_source = tmpdir / source_files_path.stem
 		shutil.copytree(source_files_path, tmp_source)
-		rendered = cli._main(tmp_source, tmp_source / 'docs')
-		assert len(rendered) == 3
-		filenames = [fp.name for fp, _ in rendered]
+		documentation = cli._main(tmp_source, tmp_source / 'docs')
+		assert len(documentation) == 3
+		generated_files_path = tmp_source / 'docs' / 'api-reference'
+		filenames = [f.name for f in generated_files_path.iterdir()]
 		expected_names = ['functools.md', 'list.md', 'string.md']
 		assert all(name in filenames for name in expected_names)
 
