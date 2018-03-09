@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<header filename="functools.applescript" headerpath="/Users/herwedar/Files/Projects/_sandbox/applescript-libraries2/functools.applescript" id="//apple_ref/doc/header/functools.applescript" lang="applescript">
+    <name>functools.applescript</name>
+    <includes/>
+    <desc>
+        <p>Library to add additional functional programming support to Applescript.
+Contains helper functions that are able to be passed into `map()` and
+`filter()`. These are duplicates of Applescript built-in functionality, but
+because the built-in functionality are not first-class functions, they are
+unable to be passed into functional programming tools.
+</p>
+    </desc>
+    <functions>
+        <function id="//apple_ref/applescript/func/contains_" lang="applescript">
+            <name>contains_</name>
+            <parsedparameterlist>
+                <parsedparameter>
+                    <type>x</type>
+                    <name/>
+                </parsedparameter>
+                <parsedparameter>
+                    <type>ls</type>
+                    <name/>
+                </parsedparameter>
+            </parsedparameterlist>
+            <declaration>
+                <declaration_keyword>on</declaration_keyword>
+                <declaration_function>contains_</declaration_function>(
+
+                <declaration_param>x</declaration_param>
+                ,
+
+                <declaration_param>ls</declaration_param>
+                )</declaration>
+            <desc>
+                <p>Return true if the list ls contains x</p>
+            </desc>
+        </function>
+    </functions>
+    <copyrightinfo>Darrick Herwehe</copyrightinfo>
+    <timestamp>2018-03-01</timestamp>
+</header>

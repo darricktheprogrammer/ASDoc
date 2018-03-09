@@ -51,3 +51,5 @@ var/
 .idea_modules/
 # Sublime text
 *.sublime*
+
+.pytest_cache/
