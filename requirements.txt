@@ -1,3 +1,2 @@
-attr
 jinja2
 pyyaml
