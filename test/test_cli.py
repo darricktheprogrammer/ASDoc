@@ -41,7 +41,6 @@ class TestDocumentGeneration:
 		assert all(name in filenames for name in expected_names)
 
 
-# @pytest.mark.usefixtures("cleandir")
 class TestMkDocConfiguration:
 	@pytest.fixture(scope='class')
 	def pages(self):
