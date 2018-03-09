@@ -65,7 +65,7 @@ class TestMkDocConfiguration:
 
 	def test_UpdateMkDocsConfigWithApiPages_NoPagesDefinedInConfig_AddsNewPagesToConfig(self, pages):
 		config = {'site_name': 'ASDoc Test'}
-		config = cli.update_mkdocs_config_with_api_pages(config, pages, '/a/path/')
+		config = cli.update_mkdocs_config_with_api_pages(config, pages, '/a/path')
 		api_reference = config['pages'][0]['API Reference']
 		assert len(api_reference) == 3
 
@@ -76,7 +76,7 @@ class TestMkDocConfiguration:
 				{'Home': 'index.md'}
 			]
 		}
-		config = cli.update_mkdocs_config_with_api_pages(config, pages, '/a/path/')
+		config = cli.update_mkdocs_config_with_api_pages(config, pages, '/a/path')
 		pages = config['pages']
 		api_reference = pages[1]['API Reference']
 		assert len(pages) == 2
@@ -93,7 +93,7 @@ class TestMkDocConfiguration:
 				}
 			]
 		}
-		config = cli.update_mkdocs_config_with_api_pages(config, pages, '/a/path/')
+		config = cli.update_mkdocs_config_with_api_pages(config, pages, '/a/path')
 		api_reference = config['pages'][0]['API Reference']
 		assert len(api_reference) == 4
 

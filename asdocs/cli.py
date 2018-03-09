@@ -122,7 +122,8 @@ def update_mkdocs_config_with_api_pages(config, modules, docs_dir):
 		raise AttributeError(f"No item with key '{key}' in {ls}")
 
 	def _strip_absolute_path(pth, absolute_path):
-		return str(pth).replace(str(docs_dir), '')
+		leading_path = f'{absolute_path}/'
+		return str(pth).replace(leading_path, '')
 
 	config_pages = config.setdefault('pages', [])
 	try:
