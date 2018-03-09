@@ -96,6 +96,25 @@ class TestMkDocConfiguration:
 		api_reference = config['pages'][0]['API Reference']
 		assert len(api_reference) == 4
 
+	def test_UpdateMkDocsConfigWithApiPages_ExistingPage_DoesNotAppendToList(self):
+		config = {
+			'site_name': 'ASDoc Test',
+			'pages': [
+				{
+					'API Reference': [
+						{'list.applescript': 'api-reference/list.md'}
+					]
+				}
+			]
+		}
+		pages = [
+			{'name': 'list.applescript', 'path': '/a/path/api-reference/list.md'}
+			]
+		config = cli.update_mkdocs_config_with_api_pages(config, pages, '/a/path')
+		api_reference = config['pages'][0]['API Reference']
+		assert len(api_reference) == 1
+		assert api_reference[0]['list.applescript'] == 'api-reference/list.md'
+
 	@pytest.mark.integration
 	def test_WriteMkdocsConfig_GivenDocumentedFiles_WritesPagesToMkdocsConfig(self, tmp_source, pages):
 		config = {

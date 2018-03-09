@@ -133,7 +133,9 @@ def update_mkdocs_config_with_api_pages(config, modules, docs_dir):
 		api_reference = config['pages'][-1]['API Reference']
 	for module in modules:
 		relative_path = _strip_absolute_path(module['path'], docs_dir)
-		api_reference.append({module['name']: relative_path})
+		path_entry = {module['name']: relative_path}
+		if path_entry not in api_reference:
+			api_reference.append(path_entry)
 	return config
 
 
